@@ -84,29 +84,31 @@ private enum ALLVViewType {
 /// For operating loading views and editing attributes use shared entity `manager`. For supporting different 
 /// appearances and layouts use `-resetToDefaults()` method before setting up options for each case.
 public class ALLoadingView: NSObject {
-    //MARK: - Public variables
-    /// Duration of loading view's appearance/disappearance animation. 0.5 seconds by default.
-    public var animationDuration: TimeInterval = 0.5
-    /// Spacing between loading view elements. 20 px by default.
-    public var itemSpacing: CGFloat = 20.0
-    /// Corner radius of loading view. Visible for `windowed` window mode. 0 by default.
-    public var cornerRadius: CGFloat = 0.0
-    /// Callback for cancel button.
-    public var cancelCallback: ALLVCancelBlock?
-    /// Flag for applying blur for background. False by default, `backgroundColor` is used.
-    public var blurredBackground: Bool = false
-    /// Background color for loading view if `blurredBackground` is disabled.
-    public lazy var backgroundColor: UIColor = UIColor(white: 0.0, alpha: 0.5)
-    /// Color of text message. White by default.
-    public lazy var textColor: UIColor = UIColor(white: 1.0, alpha: 1.0)
-    /// Font of message text view.
-    public lazy var messageFont: UIFont = UIFont.systemFont(ofSize: 25.0)
-    /// Text message. "Loading" by default.
-    public lazy var messageText: String = "Loading"
-    /// Read-only flag for checking is loading view is presented on screen. Also returns TRUE during disappearance/appearance animation.
-    public var isPresented: Bool {
-        return loadingViewPresented
-    }
+	//MARK: - Public variables
+	/// Duration of loading view's appearance/disappearance animation. 0.5 seconds by default.
+	public var animationDuration: TimeInterval = 0.5
+	/// Spacing between loading view elements. 20 px by default.
+	public var itemSpacing: CGFloat = 20.0
+	/// Corner radius of loading view. Visible for `windowed` window mode. 0 by default.
+	public var cornerRadius: CGFloat = 0.0
+	/// Callback for cancel button.
+	public var cancelCallback: ALLVCancelBlock?
+	/// Flag for applying blur for background. False by default, `backgroundColor` is used.
+	public var blurredBackground: Bool = false
+	/// Blur Effect Style
+	public var blurEffectStyle:UIBlurEffectStyle = .light
+	/// Background color for loading view if `blurredBackground` is disabled.
+	public lazy var backgroundColor: UIColor = UIColor(white: 0.0, alpha: 0.5)
+	/// Color of text message. White by default.
+	public lazy var textColor: UIColor = UIColor(white: 1.0, alpha: 1.0)
+	/// Font of message text view.
+	public lazy var messageFont: UIFont = UIFont.systemFont(ofSize: 25.0)
+	/// Text message. "Loading" by default.
+	public lazy var messageText: String = "Loading"
+	/// Read-only flag for checking is loading view is presented on screen. Also returns TRUE during disappearance/appearance animation.
+	public var isPresented: Bool {
+		return loadingViewPresented
+	}
     
     // MARK: Size adjusments
     
@@ -391,12 +393,12 @@ public class ALLoadingView: NSObject {
         }
         
         if isUsingBlurEffect {
-            let lightBlur = UIBlurEffect(style: .dark)
-            let lightBlurView = UIVisualEffectView(effect: lightBlur)
-            appearanceView = lightBlurView
+            let blurEffect = UIBlurEffect(style: blurEffectStyle)
+            let blurView = UIVisualEffectView(effect: blurEffect)
+            appearanceView = blurView
             
             // Add stack view
-            lightBlurView.contentView.addSubview(stackView)
+            blurView.contentView.addSubview(stackView)
         } else {
             appearanceView = UIView(frame: CGRect.zero)
             appearanceView?.backgroundColor = backgroundColor
@@ -626,7 +628,7 @@ public class ALLoadingView: NSObject {
     }
     
     // MARK: Subviews actions
-    public func cancelButtonTapped(_ sender: AnyObject?) {
+    @objc public func cancelButtonTapped(_ sender: AnyObject?) {
         if let _ = sender as? UIButton {
             cancelCallback?()
         }
